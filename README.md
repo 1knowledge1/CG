@@ -7,4 +7,4 @@ Repository for laboratory works on computer graphics
 
 - Laboratory work 2 (smoothing filter):
 
-<img src="https://github.com/1knowledge1/CG/blob/master/images/lab%202.jpg" width="643" height="226" />
+<img src="https://github.com/1knowledge1/CG/blob/master/images/lab%202.jpg" width="965" height="340" />
