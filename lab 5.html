@@ -196,6 +196,9 @@
         var rectListener = function(event) {
             var mousePos = getMousePos(canvas);
             bufferRect.push([mousePos.x,mousePos.y]);
+            ctx.beginPath()
+            ctx.arc(mousePos.x, mousePos.y, 3, 0, Math.PI*2, true);
+            ctx.stroke();
         }
 
         var drawListener = function() {
