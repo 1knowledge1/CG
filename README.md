@@ -16,3 +16,11 @@ Repository for laboratory works on computer graphics
 - Laboratory work 4 (Sobel operator):
 
 <img src="https://github.com/1knowledge1/CG/blob/master/images/lab%204.jpg" width="683" height="425" />
+
+- Laboratory work 5:
+
+  Реализовать алгоритм отсечение отрезка выпуклым многоугольником.
+  
+- Laboratory work 6:
+
+  Реализовать алгоритм заполнения многоугольника цветом.
