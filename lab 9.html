@@ -1,0 +1,67 @@
+<HTML>
+<BODY>
+	<h1>Лабораторная работа №9</h1>
+    <p>Задание: 3D-моделирование освещения.</p>
+    <canvas id = 'lab09' width = '300' height = '300' style = "border:1px solid"> </canvas>
+<script>
+	var canvas = document.getElementById("lab09");
+	canvas.oncontextmenu = function() { return false; }
+	var ctx = canvas.getContext("2d", {antialias:false,depth: false});
+
+	var plane1 = [ {x:20, y:220, z:40},{x:150, y:40, z:40}, {x:200, y:220, z:40}];
+	var plane2 = [ {x:150, y:40, z:40}, {x:200, y:220, z:40}, {x:250, y:170, z:20}];
+	var L = {x:100, y:120, z:100};
+	var color = "0x40e0d0";
+
+	function colorPlane (L, plane, color){
+		var AB = { x: plane[1].x-plane[0].x, 
+				y: plane[1].y-plane[0].y, 
+				z: plane[1].z-plane[0].z};
+		var AC = { x: plane[2].x-plane[0].x, 
+				y: plane[2].y-plane[0].y, 
+				z: plane[2].z-plane[0].z};
+		var Ny = (AB.z*AC.x-AC.z*AB.x)/(AC.y*AB.x-AB.y*AC.x);
+		var N = {x: -1*(Ny*AB.y+AB.z)/AB.x, y: Ny, z:1 };
+		console.log(N);
+		var beam = {x: plane[0].x-L.x, y: plane[0].y-L.y, z: plane[0].z-L.z};
+		var cos = (N.x*beam.x+N.y*beam.y+N.z*beam.z)/Math.sqrt(N.x*N.x+N.y*N.y+N.z*N.z)/Math.sqrt(beam.x*beam.x+beam.y*beam.y+beam.z*beam.z);
+	
+		var R = Math.round(((color&0xff0000)>>16)*Math.abs(cos));
+		var G = Math.round(((color&0x00ff00)>>8)*Math.abs(cos));
+		var B = Math.round(((color&0x0000ff))*Math.abs(cos));
+		var figure = [	{x:plane[0].x , y:plane[0].y },
+						{x:plane[1].x , y:plane[1].y },
+						{x:plane[2].x , y:plane[2].y }];
+		var newColor = '#'+R.toString(16) + G.toString(16) + B.toString(16);
+		console.log(newColor);
+		fillFigure(figure, newColor);
+	}
+
+	function fillFigure(figure, color) {
+		ctx.fillStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(figure[0].x,figure[0].y);
+		for(var i in figure){
+			ctx.lineTo(figure[i].x,figure[i].y);
+		}
+		ctx.closePath();
+		ctx.fill();
+	}
+	
+	var delta = 1;
+	setInterval(function (){
+		if (L.z == 200)
+		{
+			delta = -1;
+		}
+		if (L.z == 100)
+		{
+			delta = 1;
+		}
+		L.z += delta;
+		colorPlane(L, plane1, color);
+		colorPlane(L, plane2, color);
+		}, 35);
+</script> 
+</BODY>
+</HTML>
