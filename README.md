@@ -27,4 +27,12 @@ Repository for laboratory works on computer graphics
   
 - [Laboratory work 7](https://github.com/1knowledge1/CG/blob/master/lab%207.html):
 
+  Реализовать рекурсивный алгоритм построения многоугольника и заполнение его цветом.
+  
+- [Laboratory work 8](https://github.com/1knowledge1/CG/blob/master/lab%208.html):
+
   Реализовать поворот фигуры.
+  
+ - [Laboratory work 9](https://github.com/1knowledge1/CG/blob/master/lab%209.html):
+
+  3D-моделирование освещения.
