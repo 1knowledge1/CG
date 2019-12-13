@@ -34,5 +34,5 @@ Repository for laboratory works on computer graphics
   Реализовать поворот фигуры.
   
  - [Laboratory work 9](https://github.com/1knowledge1/CG/blob/master/lab%209.html):
-
-  3D-моделирование освещения.
+   
+   3D-моделирование освещения.
