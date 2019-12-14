@@ -1,0 +1,153 @@
+<HTML>
+<BODY>
+<h1>Лабораторная работа №10</h1>
+<p>Задание: реализовать алгоритм, использующий Z-буфер.</p>
+<canvas id = 'lab10' width = '350' height = '350' style = "border:1px solid"> </canvas>
+<script>
+	var canvas = document.getElementById("lab10");
+	canvas.oncontextmenu = function() { return false; }
+	var ctx = canvas.getContext("2d", {antialias:false,depth: false});
+
+	 	function norm(figure) {
+            result = { 'a': 0, 'b': 0, 'c': 0, 'd': 0 }
+            matrix_ariphm = [[figure[1].x - figure[0].x, figure[1].y - figure[0].y, figure[1].z - figure[0].z], [figure[2].x - figure[1].x, figure[2].y - figure[1].y, figure[2].z - figure[1].z], [figure[0].x - figure[2].x, figure[0].y - figure[2].y, figure[0].z - figure[2].z]]
+            matrix_ariphm[1][0] = 0;
+            matrix_ariphm[1][1] = matrix_ariphm[1][1] - matrix_ariphm[0][1] * (matrix_ariphm[1][0] / matrix_ariphm[0][0]);
+            matrix_ariphm[1][2] = matrix_ariphm[1][2] - matrix_ariphm[0][2] * (matrix_ariphm[1][0] / matrix_ariphm[0][0]);
+            matrix_ariphm[2][0] = 0;
+            matrix_ariphm[2][1] = matrix_ariphm[2][1] - matrix_ariphm[0][1] * (matrix_ariphm[2][0] / matrix_ariphm[0][0]);
+            matrix_ariphm[2][2] = matrix_ariphm[2][2] - matrix_ariphm[0][2] * (matrix_ariphm[2][0] / matrix_ariphm[0][0]);
+            matrix_ariphm[2][1] = 0;
+            matrix_ariphm[2][2] = matrix_ariphm[2][2] - matrix_ariphm[1][2] * (matrix_ariphm[2][1] / matrix_ariphm[1][1]);
+            if (matrix_ariphm[2][0] == 0&&matrix_ariphm[2][1] == 0&&matrix_ariphm[2][2]){
+                result.c = 1;
+            }
+            if (matrix_ariphm[1][0] == 0 && matrix_ariphm[1][1] == 0 && matrix_ariphm[1][2]) {
+                result.b = 1;
+            }
+            if (matrix_ariphm[0][0] == 0 && matrix_ariphm[0][1] == 0 && matrix_ariphm[0][2]) {
+                result.a = 1;
+            }
+            if (matrix_ariphm[1][1] != 0) {
+                result.c = 1;
+                result.b = (-matrix_ariphm[1][2] * result.c) / matrix_ariphm[1][1];
+                if (matrix_ariphm[0][0]!=0){
+                    result.a = (-matrix_ariphm[0][1] * result.b) / matrix_ariphm[0][0] + (-matrix_ariphm[0][2] * result.c) / matrix_ariphm[0][0];
+                }
+            }
+            result.d = -result.a * figure[0].x - result.b * figure[0].y - result.c * figure[0].z;
+            console.log(matrix_ariphm);
+            return result;
+        }
+
+        function lines(figure) {
+            result = [{ 'k': 0, 'b': 0, 'd': 0, 'xonl': false }, { 'k': 0, 'b': 0, 'd': 0, 'xonl': false }, { 'k': 0, 'b': 0, 'd': 0, 'xonl': false }];
+            result[0].k = (figure[1].y - figure[0].y) / (figure[1].x - figure[0].x);
+            if (figure[1].x == figure[0].x) {
+                result[0].xonl = true;
+                result[0].k = figure[0].x;
+                if (figure[2].x > figure[1].x) { result[0].d = 1; }
+            } else if (figure[2].y > figure[1].y) { result[0].d = 1; }
+            result[0].b = figure[0].y - result[0].k * figure[0].x;
+            result[1].k = (figure[2].y - figure[1].y) / (figure[2].x - figure[1].x);
+            if (figure[2].x == figure[1].x) {
+                result[1].xonl = true;
+                result[1].k = figure[1].x;
+                if (figure[0].x > figure[2].x) { result[1].d = 1; }
+            } else if (figure[0].y > figure[2].y) { result[1].d = 1; }
+            result[1].b = figure[1].y - result[1].k * figure[1].x;
+            result[2].k = (figure[0].y - figure[2].y) / (figure[0].x - figure[2].x);
+            if (figure[0].x == figure[2].x) {
+                result[2].xonl = true;
+                result[2].k = figure[2].x;
+                if (figure[1].x > figure[0].x) { result[2].d = 1; }
+            } else if (figure[1].y > figure[0].y) { result[2].d = 1; }
+            result[2].b = figure[2].y - result[2].k * figure[2].x;
+           
+            return result;
+        }
+
+        function is_in_plane1(x, y) {
+            for (var i = 0; i < 3; i++) {
+                if ((!figure1_lines[i].xonl) && ((figure1_lines[i].k * x + figure1_lines[i].b < y && figure1_lines[i].d == 0) || (figure1_lines[i].k * x + figure1_lines[i].b >= y && figure1_lines.d == 1))) {
+                    return false;
+                } else if (figure1_lines[i].xonl && (figure1_lines[i].k < x && figure1_lines[i].d == 0) || (figure1_lines[i].k >= x && figure1_lines.d == 1)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function is_in_plane2(x, y) {
+            for (var i = 0; i < 3; i++) {
+                if ((!figure2_lines[i].xonl) && ((figure2_lines[i].k * x + figure2_lines[i].b < y && figure2_lines[i].d == 0) || (figure2_lines[i].k * x + figure2_lines[i].b >= y && figure2_lines.d == 1))) {
+                    return false;
+                } else if (figure2_lines[i].xonl && (figure2_lines[i].k < x && figure2_lines[i].d == 0) || (figure2_lines[i].k >= x && figure2_lines.d == 1)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function is_on_plane(x, y, z) {
+            if (figure1_normal.a * x + figure1_normal.b * y + figure1_normal.c * z + figure1_normal.d == 0 && is_in_plane1(x, y)) {
+                flag = 1;
+                return;
+            }
+            if (figure2_normal.a * x + figure2_normal.b * y + figure2_normal.c * z + figure2_normal.d == 0 && is_in_plane2(x, y)) {
+                flag = 2;
+                return;
+            }
+            if (is_in_plane1(x, y) && is_in_plane2(x, y)) {
+                if (-(figure1_normal.a * x + figure1_normal.b * y + figure1_normal.d) / figure1_normal.c < -(figure2_normal.a * x + figure2_normal.b * y + figure2_normal.d) / figure2_normal.c) {
+                    flag = 1;
+                    return;
+                }
+                else {
+                    flag = 2;
+                    return;
+                }
+            }
+            if (is_in_plane1(x, y)) {
+                flag = 1;
+                return;
+            }
+            if (is_in_plane2(x, y)) {
+                flag = 2;
+                return;
+            }
+        }
+
+        function draw() {
+            for (var xi = 0; xi < 500; xi+=1) {
+                for (var yi = 0; yi < 500; yi+=1) {
+                    flag = 0;
+                    for (var zi = 0; zi < 500; zi ++) {
+                        is_on_plane(xi, yi, zi);
+                        if (flag > 0) {
+                            if (flag == 1) {
+                                ctx.fillStyle = '#40e0d0';
+                               
+                            }
+                            if (flag == 2) {
+                                ctx.fillStyle = '#ff6666';
+                            }
+                            ctx.fillRect(xi, yi, 1, 1);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        var figure1 = [{ 'x': 100, 'y': 100, 'z': 500}, { 'x': 150, 'y':150, 'z': 0 }, { 'x': 100, 'y': 200, 'z': 0 }];
+        figure1_normal = norm(figure1);
+        figure1_lines = lines(figure1);
+        var figure2 = [{ 'x': 0, 'y': 0, 'z': 0 }, { 'x': 200, 'y': 0, 'z': 300 }, { 'x':200 , 'y': 200, 'z': 300 }];
+        var figure2_normal = norm(figure2);
+        var figure2_lines = lines(figure2);
+        var flag = 0;
+		draw();
+</script> 
+</BODY>
+</HTML>
