@@ -46,3 +46,7 @@ Repository for laboratory works on computer graphics
    3D-моделирование освещения.
    
    <img src="https://github.com/1knowledge1/CG/blob/master/images/lab%209.png"/>
+   
+ - [Laboratory work 10](https://github.com/1knowledge1/CG/blob/master/lab%2010.html):
+ 
+   Реализовать алгоритм, использующий Z-буфер.
